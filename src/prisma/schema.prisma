@@ -15,11 +15,93 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+
+  profile       Profile?
  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
- 
+
+model Profile {
+  id                 String     @id @default(cuid())
+  name               String      
+  profileSlug        String     @unique
+  bio                String     
+  profilePicture     String
+  workExperience     WorkExperience[] 
+  education          Education[]
+  
+  skills             ProfileSkills[]
+
+  githubUsername     String?
+  githubVerified     Boolean     @default(false)
+
+  leetcodeUsername   String?
+  leetcodeVerified   Boolean    @default(false)
+
+  User    User       @relation(fields: [userId], references: [id])
+  userId  String     @unique
+}
+
+model ProfileSkills {
+  profileId String
+  skillName String
+
+  isPrimary Boolean @default(false)
+
+  profile Profile @relation(fields: [profileId], references: [id])
+  skill   Skill   @relation(fields: [skillName], references: [name])
+
+  @@id([profileId, skillName])
+}
+
+model Skill {
+  name        String      @id
+  ProfileSkills ProfileSkills[]
+}
+
+model WorkExperience {
+  id            String      @id @default(cuid())
+
+  // Company data to be fetched by an external service
+  companyName   String
+  companyUrl    String?
+
+  position         String
+  startDate     DateTime
+  endDate       DateTime?
+
+  description   String[]
+
+  isCurrentRole Boolean
+
+  profile       Profile @relation(fields: [profileId], references: [id])
+  profileId     String
+}
+
+model Education {
+  id                String      @id @default(cuid())
+
+  institutionName   String
+
+  degree            String
+  fieldOfStudy      String
+
+  description       String[]
+
+  startDate         DateTime
+  endDate           DateTime?
+
+  isCurrentSchool   Boolean
+
+  grade             Float
+
+  isGradePercentage Boolean  @default(false)
+
+  profile           Profile @relation(fields: [profileId], references: [id])
+  profileId         String
+}
+
 model Account {
   userId            String
   type              String
