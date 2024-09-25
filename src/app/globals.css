@@ -48,3 +48,8 @@
     --ring: 225.45 71.22% 72.75%;
   }
 }
+
+/* Existing styles */
+.rdp-vhidden {
+  @apply hidden;
+}

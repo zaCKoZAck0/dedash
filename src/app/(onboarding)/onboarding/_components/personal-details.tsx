@@ -38,10 +38,11 @@ export function PersonalDetails({
                 backgroundRepeat: 'no-repeat',
               }}
             >
+              {/* TODO: Make it actually upload photos. */}
               <Button
                 size='sm'
-                variant='secondary'
-                className='absolute bottom-0 right-1/3 h-fit translate-x-[10%] px-2 py-1 shadow'
+                variant='outline'
+                className='absolute bottom-[-0.5rem] right-[30%] h-fit translate-x-[10%] px-2 py-1 shadow'
               >
                 Edit <Edit size={12} className='ml-1' />
               </Button>

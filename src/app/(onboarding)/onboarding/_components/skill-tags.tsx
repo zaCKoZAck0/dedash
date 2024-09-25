@@ -7,14 +7,9 @@ import { Badge } from '~/components/ui/badge';
 import { Star } from 'lucide-react';
 import { Label } from '~/components/ui/label';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '~/components/ui/tooltip';
 import { OnboardingProfile } from './onboarding';
 
-// Expanded list of predefined skills
+// Todo: Do this on the server
 const predefinedSkills = [
   'Programming',
   'Web Development',
@@ -188,50 +183,43 @@ export function SkillTags({
                   className='flex items-center space-x-1 pr-1'
                 >
                   <span>{skill.name}</span>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant='ghost'
-                        size='sm'
-                        className='h-4 w-4 bg-transparent p-0 text-inherit hover:bg-transparent hover:text-inherit'
-                        onClick={() => toggleTopSkill(index)}
-                      >
-                        <Star
-                          className={`h-3 w-3 ${skill.isPrimary ? 'fill-current' : ''}`}
-                        />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Primary Skill</TooltipContent>
-                  </Tooltip>
 
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant='ghost'
-                        size='sm'
-                        className='h-4 w-4 bg-transparent p-0 text-inherit hover:bg-transparent hover:text-inherit'
-                        onClick={() => removeSkill(index)}
-                      >
-                        <span className='sr-only'>Remove</span>
-                        <svg
-                          xmlns='http://www.w3.org/2000/svg'
-                          width='24'
-                          height='24'
-                          viewBox='0 0 24 24'
-                          fill='none'
-                          stroke='currentColor'
-                          strokeWidth='2'
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                          className='h-3 w-3'
-                        >
-                          <line x1='18' y1='6' x2='6' y2='18'></line>
-                          <line x1='6' y1='6' x2='18' y2='18'></line>
-                        </svg>
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Remove</TooltipContent>
-                  </Tooltip>
+                  <Button
+                    variant='ghost'
+                    title='Make top skill'
+                    size='sm'
+                    className='h-4 w-4 bg-transparent p-0 text-inherit hover:bg-transparent hover:text-inherit'
+                    onClick={() => toggleTopSkill(index)}
+                  >
+                    <Star
+                      className={`h-3 w-3 ${skill.isPrimary ? 'fill-current' : ''}`}
+                    />
+                  </Button>
+
+                  <Button
+                    variant='ghost'
+                    title='Remove skill'
+                    size='sm'
+                    className='h-4 w-4 bg-transparent p-0 text-inherit hover:bg-transparent hover:text-inherit'
+                    onClick={() => removeSkill(index)}
+                  >
+                    <span className='sr-only'>Remove</span>
+                    <svg
+                      xmlns='http://www.w3.org/2000/svg'
+                      width='24'
+                      height='24'
+                      viewBox='0 0 24 24'
+                      fill='none'
+                      stroke='currentColor'
+                      strokeWidth='2'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      className='h-3 w-3'
+                    >
+                      <line x1='18' y1='6' x2='6' y2='18'></line>
+                      <line x1='6' y1='6' x2='18' y2='18'></line>
+                    </svg>
+                  </Button>
                 </Badge>
               </motion.div>
             );

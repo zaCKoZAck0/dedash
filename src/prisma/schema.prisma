@@ -65,9 +65,9 @@ model WorkExperience {
 
   // Company data to be fetched by an external service
   companyName   String
-  companyUrl    String
+  companyUrl    String?
 
-  title         String
+  position         String
   startDate     DateTime
   endDate       DateTime?
 

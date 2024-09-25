@@ -10,7 +10,6 @@ import {
 } from '~/components/ui/dialog';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
-import { SearchCompany } from '~/components/search-company';
 import {
   Popover,
   PopoverTrigger,
@@ -20,18 +19,18 @@ import { format } from 'date-fns';
 import { cn } from '~/lib/utils';
 import { Label } from '~/components/ui/label';
 import { CalendarIcon } from 'lucide-react';
-import { OnboardingProfile, WorkExperience } from './onboarding';
+import { OnboardingProfile, Education } from './onboarding';
 
-const DEFAULT_EXPERIENCE: WorkExperience = {
-  company: '',
-  companyUrl: '',
-  position: '',
+const DEFAULT_EDUCATION: Education = {
+  institution: '',
+  degree: '',
+  fieldOfStudy: '',
   startDate: new Date(),
-  isCurrentRole: false,
+  isCurrent: false,
   description: [],
 };
 
-export function WorkExperiencePopover({
+export function EducationPopover({
   profile,
   children,
   setProfile,
@@ -43,83 +42,126 @@ export function WorkExperiencePopover({
   idx?: number;
 }) {
   const [open, setOpen] = React.useState(false);
-  const [experience, setWorkExperience] = React.useState<WorkExperience>(
-    idx == -1 ? DEFAULT_EXPERIENCE : profile.workExperience[idx]
+  const [education, setEducation] = React.useState<Education>(
+    idx == -1 ? DEFAULT_EDUCATION : profile.education[idx]
   );
 
-  const addWorkExperience = () => {
+  const addEducation = () => {
     if (idx !== -1) {
-      const newWorkExperience = [...profile.workExperience];
-      newWorkExperience[idx] = experience;
+      const newEducation = [...profile.education];
+      newEducation[idx] = education;
       setProfile({
         ...profile,
-        workExperience: newWorkExperience,
+        education: newEducation,
       });
     } else
       setProfile({
         ...profile,
-        workExperience: [...profile.workExperience, experience],
+        education: [...profile.education, education],
       });
 
-    setWorkExperience(DEFAULT_EXPERIENCE);
+    setEducation(DEFAULT_EDUCATION);
     setOpen(false);
   };
 
   const onOpenChange = (open: boolean) => {
     if (!open) {
-      setWorkExperience(DEFAULT_EXPERIENCE);
+      setEducation(DEFAULT_EDUCATION);
     } else if (idx !== -1) {
-      setWorkExperience(profile.workExperience[idx]);
+      setEducation(profile.education[idx]);
     }
     setOpen(open);
   };
 
-  const deleteWorkExperience = () => {
-    const newWorkExperience = [...profile.workExperience];
-    newWorkExperience.splice(idx, 1);
+  const deleteEducation = () => {
+    const newEducation = [...profile.education];
+    newEducation.splice(idx, 1);
     setProfile({
       ...profile,
-      workExperience: newWorkExperience,
+      education: newEducation,
     });
     setOpen(false);
   };
 
   const disableNext =
-    experience.company === '' ||
-    experience.position === '' ||
-    (!experience.isCurrentRole && !experience.endDate);
+    !education.institution ||
+    !education.degree ||
+    !education.fieldOfStudy ||
+    !education.startDate ||
+    (!education.isCurrent && !education.endDate);
 
   return (
     <Dialog onOpenChange={onOpenChange} open={open}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className='w-full max-w-[350px] rounded-md'>
         <DialogHeader>
-          <DialogTitle>
-            {idx === -1 ? 'Add' : 'Edit'} Work Experience
-          </DialogTitle>
+          <DialogTitle>{idx === -1 ? 'Add' : 'Edit'} Education</DialogTitle>
         </DialogHeader>
-        <div className='space-y-2'>
+        <div className='max-h-[400px] space-y-2 overflow-y-auto p-1'>
+          <span tabIndex={0} />
           <div className='flex flex-col space-y-1.5'>
-            <Label className='text-xs text-muted-foreground' htmlFor='name'>
-              Company
+            <Label
+              className='text-xs text-muted-foreground'
+              htmlFor='institute'
+            >
+              Institution
             </Label>
-            <SearchCompany
-              experience={experience}
-              setWorkExperience={setWorkExperience}
+            <Input
+              id='institute'
+              placeholder='Ex. Harvard University'
+              value={education.institution}
+              onChange={(e) =>
+                setEducation({
+                  ...education,
+                  institution: e.target.value,
+                })
+              }
             />
           </div>
           <div className='flex flex-col space-y-1.5'>
-            <Label className='text-xs text-muted-foreground' htmlFor='title'>
-              Title
+            <Label className='text-xs text-muted-foreground' htmlFor='degree'>
+              Degree
             </Label>
             <Input
-              id='title'
-              placeholder='Ex. Software Engineer'
-              value={experience.position}
+              id='degree'
+              placeholder='Ex. Bachelor of Science'
+              value={education.degree}
               onChange={(e) =>
-                setWorkExperience({
-                  ...experience,
-                  position: e.target.value,
+                setEducation({
+                  ...education,
+                  degree: e.target.value,
+                })
+              }
+            />
+          </div>
+          <div className='flex flex-col space-y-1.5'>
+            <Label className='text-xs text-muted-foreground' htmlFor='fos'>
+              Field of Study
+            </Label>
+            <Input
+              id='fos'
+              placeholder='Ex. Computer Science'
+              value={education.fieldOfStudy}
+              onChange={(e) =>
+                setEducation({
+                  ...education,
+                  fieldOfStudy: e.target.value,
+                })
+              }
+            />
+          </div>
+          <div className='flex flex-col space-y-1.5'>
+            <Label className='text-xs text-muted-foreground' htmlFor='grade'>
+              Grade
+            </Label>
+            <Input
+              id='grade'
+              placeholder='Ex. 3.5 GPA'
+              value={education.grade}
+              onChange={(e) =>
+                setEducation({
+                  ...education,
+                  fieldOfStudy: e.target.value,
                 })
               }
             />
@@ -127,14 +169,12 @@ export function WorkExperiencePopover({
           <div className='flex items-center space-x-2 py-5 pl-2'>
             <Checkbox
               id='is-current'
-              checked={experience.isCurrentRole}
+              checked={education.isCurrent}
               onCheckedChange={(e) =>
-                setWorkExperience({
-                  ...experience,
-                  endDate: Boolean(e.valueOf())
-                    ? undefined
-                    : experience.endDate,
-                  isCurrentRole: Boolean(e.valueOf()),
+                setEducation({
+                  ...education,
+                  endDate: Boolean(e.valueOf()) ? undefined : education.endDate,
+                  isCurrent: Boolean(e.valueOf()),
                 })
               }
             />
@@ -142,7 +182,7 @@ export function WorkExperiencePopover({
               htmlFor='is-current'
               className='text-sm font-normal peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
             >
-              I currently work at this role.
+              I currently study here.
             </label>
           </div>
           <div className='flex flex-col space-y-1.5'>
@@ -155,12 +195,12 @@ export function WorkExperiencePopover({
                   variant={'outline'}
                   className={cn(
                     'w-full justify-start text-left font-sans font-normal',
-                    !experience.startDate && 'text-muted-foreground'
+                    !education.startDate && 'text-muted-foreground'
                   )}
                 >
                   <CalendarIcon className='mr-2 h-4 w-4' />
-                  {experience.startDate ? (
-                    format(experience.startDate, 'PPP')
+                  {education.startDate ? (
+                    format(education.startDate, 'PPP')
                   ) : (
                     <span>Pick a date</span>
                   )}
@@ -169,10 +209,10 @@ export function WorkExperiencePopover({
               <PopoverContent className='w-auto p-0'>
                 <Calendar
                   mode='single'
-                  selected={experience.startDate}
+                  selected={education.startDate}
                   onSelect={(date) =>
-                    setWorkExperience({
-                      ...experience,
+                    setEducation({
+                      ...education,
                       startDate: date ?? new Date(),
                     })
                   }
@@ -191,19 +231,19 @@ export function WorkExperiencePopover({
             <Popover>
               <PopoverTrigger asChild>
                 <Button
-                  disabled={experience.isCurrentRole}
+                  disabled={education.isCurrent}
                   variant={'outline'}
                   className={cn(
                     'w-full justify-start text-left font-sans font-normal',
-                    !experience.endDate && 'text-muted-foreground'
+                    !education.endDate && 'text-muted-foreground'
                   )}
                 >
                   <CalendarIcon className='mr-2 h-4 w-4' />
-                  {experience.endDate ? (
-                    format(experience.endDate, 'PPP')
+                  {education.endDate ? (
+                    format(education.endDate, 'PPP')
                   ) : (
                     <span>
-                      {experience.isCurrentRole ? 'Present' : 'Pick a date'}
+                      {education.isCurrent ? 'Present' : 'Pick a date'}
                     </span>
                   )}
                 </Button>
@@ -212,17 +252,17 @@ export function WorkExperiencePopover({
                 <Calendar
                   mode='single'
                   hideHead
-                  selected={experience.endDate}
+                  selected={education.endDate}
                   onSelect={(date) =>
-                    setWorkExperience({
-                      ...experience,
+                    setEducation({
+                      ...education,
                       endDate: date,
                     })
                   }
-                  fromDate={experience.startDate}
+                  fromDate={education.startDate}
                   captionLayout='dropdown'
-                  fromYear={experience.startDate.getFullYear()}
-                  fromMonth={experience.startDate}
+                  fromYear={education.startDate.getFullYear()}
+                  fromMonth={education.startDate}
                   toYear={new Date().getFullYear()}
                   initialFocus
                 />
@@ -236,9 +276,9 @@ export function WorkExperiencePopover({
               size='sm'
               variant='link'
               className='h-fit'
-              onClick={deleteWorkExperience}
+              onClick={deleteEducation}
             >
-              Delete Experience
+              Delete Education
             </Button>
           </div>
         )}
@@ -246,10 +286,10 @@ export function WorkExperiencePopover({
           size='sm'
           className='flex-grow'
           disabled={disableNext}
-          onClick={addWorkExperience}
+          onClick={addEducation}
         >
           {idx === -1 ? 'Add ' : 'Update '}
-          Work Experience
+          Education
         </Button>
       </DialogContent>
     </Dialog>

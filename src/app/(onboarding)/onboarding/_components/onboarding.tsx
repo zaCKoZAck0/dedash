@@ -9,11 +9,13 @@ import {
 import { Wizard } from 'react-use-wizard';
 import { AnimatePresence } from 'framer-motion';
 import { PersonalDetails } from './personal-details';
-import { JobDetails } from './job-details';
+import { JobDetails } from './experience-details';
 import { EducationDetails } from './education-details';
 import { Session } from 'next-auth';
 import { useState } from 'react';
 import { Skills } from './skills';
+import { Bio } from './bio';
+import { Completed } from './completed';
 
 export interface WorkExperience {
   company: string;
@@ -21,17 +23,19 @@ export interface WorkExperience {
   position: string;
   startDate: Date;
   endDate?: Date;
-  isCurrent: boolean;
-  description: string;
+  isCurrentRole: boolean;
+  description: string[];
 }
 
 export interface Education {
   institution: string;
   degree: string;
+  fieldOfStudy: string;
   startDate: Date;
   endDate?: Date;
   isCurrent: boolean;
-  description: string;
+  grade?: string;
+  description: string[];
 }
 
 export interface Skill {
@@ -68,8 +72,10 @@ export function Onboarding({ session }: { session: Session | null }) {
         <Wizard startIndex={0}>
           <PersonalDetails profile={profile} setProfile={setProfile} />
           <JobDetails profile={profile} setProfile={setProfile} />
-          <EducationDetails />
+          <EducationDetails profile={profile} setProfile={setProfile} />
           <Skills profile={profile} setProfile={setProfile} />
+          <Bio profile={profile} setProfile={setProfile} />
+          <Completed profile={profile} />
         </Wizard>
       </AnimatePresence>
     </Card>
