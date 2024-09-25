@@ -1,8 +1,8 @@
 import { auth } from '~/auth';
-import { LoginButtons } from './_components/login-buttons';
+import { Onboarding } from './_components/onboarding';
 
 export default async function JoinPage() {
   const session = await auth();
 
-  return <LoginButtons session={session} />;
+  return <Onboarding session={session} />;
 }
